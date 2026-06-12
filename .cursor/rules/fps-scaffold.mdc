@@ -1,0 +1,21 @@
+---
+description: First Person Trust Stack — always read docs/SCAFFOLD-BRIEF.md before structural work
+globs:
+alwaysApply: true
+---
+
+# First Person Trust Stack (FPS)
+
+This is the **First Person Trust Stack** — a TypeScript monorepo for fpndtg.com product UX.
+
+Before scaffolding, refactoring layout, or adding major features, read **`docs/SCAFFOLD-BRIEF.md`** in full.
+
+Key facts:
+
+- **Path A:** TypeScript product + HTTP adapters to live VTI at `*.fpndtg.com`
+- **Not** part of verifiable-trust-infrastructure; never import VTI Rust crates here
+- Entity model: VTA (keys) → VTC (community, issues VMC) → VTN (federation of VTCs, greenfield)
+- Brand: `fpndtg.com`, Trust Tasks org `fpndtg` — no Affinidi/OpenVTC user-facing branding
+- Phase 0 (VTI deploy smoke) was skipped intentionally
+
+When user says "scaffold FPS" or similar, execute Phase 1 in SCAFFOLD-BRIEF.md.
