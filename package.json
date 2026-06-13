@@ -1,0 +1,19 @@
+{
+  "name": "first-person-trust-stack",
+  "private": true,
+  "version": "0.1.0",
+  "description": "First Person Trust Stack — PNM/CNM/VTN UX, governance plane, and VTI adapters (fpndtg.com)",
+  "license": "Apache-2.0",
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "pnpm -r run build",
+    "dev": "pnpm -r --parallel run dev",
+    "dev:web": "pnpm --filter @fpndtg/web dev",
+    "dev:validator": "pnpm --filter @fpndtg/validator dev",
+    "typecheck": "pnpm -r run typecheck",
+    "lint": "pnpm -r run lint"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "@fpndtg/governance-api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node -e \"console.log('@fpndtg/governance-api: stub')\"",
+    "dev": "node -e \"console.log('governance-api not implemented')\"",
+    "typecheck": "node -e \"console.log('stub')\"",
+    "lint": "echo \"no lint configured\""
+  }
+}
