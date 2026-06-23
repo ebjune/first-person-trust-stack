@@ -1,0 +1,109 @@
+// Infrastructure Database Schema
+// Append-only event log for VTA/VTC lifecycle, TSP routing, Trust Task audit, and verification.
+// Convention: no UPDATEs — only INSERTs. Hash chaining provides tamper evidence.
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_INFRA_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  // Separate output so infra and user clients don't collide in the monorepo
+  output   = "../node_modules/.prisma/client-infra"
+}
+
+// ---------------------------------------------------------------------------
+// VTA Events — append-only log of Verifiable Trust Agent lifecycle
+// ---------------------------------------------------------------------------
+model VtaEvent {
+  id        String   @id @default(cuid())
+  sequence  Int      @default(autoincrement())
+  did       String   @db.VarChar(255)
+  /// created | rotated | revoked
+  eventType String   @db.VarChar(50)
+  timestamp DateTime @default(now())
+  payload   Json
+  /// SHA-256 of (prevHash + JSON.stringify(payload))
+  hash      String   @db.VarChar(64)
+  prevHash  String   @db.VarChar(64)
+
+  @@index([did, timestamp])
+  @@index([sequence])
+  @@map("vta_events")
+}
+
+// ---------------------------------------------------------------------------
+// VTC Events — append-only log of Verifiable Trust Community lifecycle
+// ---------------------------------------------------------------------------
+model VtcEvent {
+  id        String   @id @default(cuid())
+  sequence  Int      @default(autoincrement())
+  /// Community DID
+  cdid      String   @db.VarChar(255)
+  /// created | member_added | member_removed | governance_changed | dissolved
+  eventType String   @db.VarChar(50)
+  timestamp DateTime @default(now())
+  payload   Json
+  hash      String   @db.VarChar(64)
+  prevHash  String   @db.VarChar(64)
+
+  @@index([cdid, timestamp])
+  @@index([sequence])
+  @@map("vtc_events")
+}
+
+// ---------------------------------------------------------------------------
+// TSP Events — Trust Spanning Protocol message routing log
+// ---------------------------------------------------------------------------
+model TspEvent {
+  id        String   @id @default(cuid())
+  messageId String   @unique @db.VarChar(255)
+  fromDid   String   @db.VarChar(255)
+  toDid     String   @db.VarChar(255)
+  /// sent | delivered | failed | relayed
+  eventType String   @db.VarChar(50)
+  timestamp DateTime @default(now())
+  payload   Json
+
+  @@index([fromDid, timestamp])
+  @@index([toDid, timestamp])
+  @@map("tsp_events")
+}
+
+// ---------------------------------------------------------------------------
+// Trust Task Log — HTTP audit trail for calls to VTI Trust Task endpoints
+// ---------------------------------------------------------------------------
+model TrustTaskLog {
+  id           String   @id @default(cuid())
+  /// e.g. https://trusttasks.org/openvtc/vtc/join-requests/submit/1.0
+  taskUri      String   @db.VarChar(500)
+  method       String   @db.VarChar(10)
+  endpoint     String   @db.VarChar(500)
+  statusCode   Int
+  timestamp    DateTime @default(now())
+  requestBody  Json?
+  responseBody Json?
+  durationMs   Int?
+
+  @@index([taskUri, timestamp])
+  @@index([timestamp])
+  @@map("trust_task_log")
+}
+
+// ---------------------------------------------------------------------------
+// Verification Events — credential/presentation verification attempts
+// ---------------------------------------------------------------------------
+model VerificationEvent {
+  id             String   @id @default(cuid())
+  presentationId String   @db.VarChar(255)
+  verifierDid    String   @db.VarChar(255)
+  /// valid | invalid | error
+  result         String   @db.VarChar(20)
+  timestamp      DateTime @default(now())
+  details        Json
+
+  @@index([verifierDid, timestamp])
+  @@index([presentationId])
+  @@map("verification_events")
+}

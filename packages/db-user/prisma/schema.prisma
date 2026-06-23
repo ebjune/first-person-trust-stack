@@ -1,0 +1,132 @@
+// User Database Schema
+// Mutable user-facing state: accounts, VTA management, VTC memberships,
+// credential wallet, auth sessions, and activity log.
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_USER_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+  // Separate output so infra and user clients don't collide in the monorepo
+  output   = "../node_modules/.prisma/client-user"
+}
+
+// ---------------------------------------------------------------------------
+// User — primary account record; DID is the canonical identity
+// ---------------------------------------------------------------------------
+model User {
+  id          String   @id @default(cuid())
+  email       String?  @unique
+  /// Primary DID for this user (e.g. did:web:vta.fpndtg.com:users:abc)
+  primaryDid  String   @unique @db.VarChar(255)
+  displayName String?  @db.VarChar(100)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  vtas        UserVta[]
+  memberships VtcMembership[]
+  credentials WalletCredential[]
+  sessions    AuthSession[]
+  activityLog ActivityLog[]
+
+  @@map("users")
+}
+
+// ---------------------------------------------------------------------------
+// UserVta — user's view of their Verifiable Trust Agents
+// ---------------------------------------------------------------------------
+model UserVta {
+  id          String   @id @default(cuid())
+  userId      String
+  did         String   @unique @db.VarChar(255)
+  label       String   @db.VarChar(100)
+  /// sovereign | delegated | custodial
+  custodyMode String   @db.VarChar(20)
+  createdAt   DateTime @default(now())
+
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("user_vtas")
+}
+
+// ---------------------------------------------------------------------------
+// VtcMembership — user's community memberships
+// ---------------------------------------------------------------------------
+model VtcMembership {
+  id       String   @id @default(cuid())
+  userId   String
+  /// Community DID
+  cdid     String   @db.VarChar(255)
+  /// admin | member | viewer
+  role     String   @db.VarChar(50)
+  joinedAt DateTime @default(now())
+  /// active | suspended | left
+  status   String   @db.VarChar(20)
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, cdid])
+  @@index([cdid])
+  @@map("vtc_memberships")
+}
+
+// ---------------------------------------------------------------------------
+// WalletCredential — VMCs and other VCs held by the user
+// ---------------------------------------------------------------------------
+model WalletCredential {
+  id             String    @id @default(cuid())
+  userId         String
+  credentialId   String    @unique @db.VarChar(255)
+  type           String    @db.VarChar(100)
+  issuerDid      String    @db.VarChar(255)
+  issuedAt       DateTime
+  expiresAt      DateTime?
+  /// active | revoked | expired
+  status         String    @db.VarChar(20)
+  credentialData Json
+
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@index([issuerDid])
+  @@map("wallet_credentials")
+}
+
+// ---------------------------------------------------------------------------
+// AuthSession — active DID-based authentication sessions
+// ---------------------------------------------------------------------------
+model AuthSession {
+  id         String   @id @default(cuid())
+  userId     String
+  token      String   @unique @db.VarChar(255)
+  /// The DID used to authenticate this session
+  did        String   @db.VarChar(255)
+  createdAt  DateTime @default(now())
+  expiresAt  DateTime
+  lastUsedAt DateTime @default(now())
+
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+  @@map("auth_sessions")
+}
+
+// ---------------------------------------------------------------------------
+// ActivityLog — user action history
+// ---------------------------------------------------------------------------
+model ActivityLog {
+  id        String   @id @default(cuid())
+  userId    String
+  action    String   @db.VarChar(100)
+  timestamp DateTime @default(now())
+  metadata  Json?
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, timestamp])
+  @@map("activity_log")
+}

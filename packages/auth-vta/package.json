@@ -1,0 +1,25 @@
+{
+  "name": "@fpndtg/auth-vta",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "echo \"no lint configured\""
+  },
+  "dependencies": {
+    "@fpndtg/brand-config": "workspace:*",
+    "@fpndtg/db-user": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.3"
+  }
+}

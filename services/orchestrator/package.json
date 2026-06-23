@@ -4,9 +4,24 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node -e \"console.log('@fpndtg/orchestrator: stub')\"",
-    "dev": "node -e \"console.log('orchestrator not implemented')\"",
-    "typecheck": "node -e \"console.log('stub')\"",
+    "build": "tsc",
+    "dev": "dotenv -e ../../.env -- node --watch dist/index.js",
+    "start": "dotenv -e ../../.env -- node dist/index.js",
+    "typecheck": "tsc --noEmit",
     "lint": "echo \"no lint configured\""
+  },
+  "dependencies": {
+    "@fpndtg/adapters-vti": "workspace:*",
+    "@fpndtg/brand-config": "workspace:*",
+    "@fpndtg/db-infra": "workspace:*",
+    "@fpndtg/event-bridge": "workspace:*",
+    "@fpndtg/ledger-emulator": "workspace:*",
+    "@hono/node-server": "^1.13.7",
+    "hono": "^4.7.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "dotenv-cli": "^11.0.0",
+    "typescript": "^5.7.3"
   }
 }

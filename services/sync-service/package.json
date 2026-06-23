@@ -1,0 +1,21 @@
+{
+  "name": "@fpndtg/sync-service",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "dev": "node --watch dist/index.js",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "echo \"no lint configured\""
+  },
+  "dependencies": {
+    "@fpndtg/db-user": "workspace:*",
+    "@fpndtg/event-bridge": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.3"
+  }
+}

@@ -1,84 +1,40 @@
-import { useCallback, useState } from "react";
-import { vtaHealth, vtcHealth, type HealthResult } from "@fpndtg/adapters-vti";
-import { FPNDTG_SERVICES, type FpndtgService } from "@fpndtg/brand-config";
-
-function statusClass(status: FpndtgService["status"]): string {
-  return `badge ${status}`;
-}
-
-function ServiceCard({ service }: { service: FpndtgService }) {
-  const [health, setHealth] = useState<HealthResult | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  const checkHealth = useCallback(async () => {
-    if (service.id !== "vta" && service.id !== "vtc") return;
-    setLoading(true);
-    try {
-      const result =
-        service.id === "vta" ? await vtaHealth(service.url) : await vtcHealth(service.url);
-      setHealth(result);
-    } finally {
-      setLoading(false);
-    }
-  }, [service]);
-
-  const canProbe = service.id === "vta" || service.id === "vtc";
-
-  return (
-    <article className="card">
-      <h2>{service.label}</h2>
-      <p>{service.role}</p>
-      <div className="meta">
-        <span className={statusClass(service.status)}>{service.status}</span>
-        <a href={service.url} target="_blank" rel="noreferrer">
-          {service.host}
-        </a>
-        {service.fpsComponent && (
-          <span style={{ color: "#64748b" }}>{service.fpsComponent}</span>
-        )}
-      </div>
-      {canProbe && (
-        <>
-          <button type="button" onClick={checkHealth} disabled={loading}>
-            {loading ? "Checking…" : "Check /health"}
-          </button>
-          {health && (
-            <div className={`health ${health.ok ? "ok" : "fail"}`}>
-              {health.ok ? "Healthy" : "Unreachable"} — HTTP {health.status || "—"}
-            </div>
-          )}
-        </>
-      )}
-    </article>
-  );
-}
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import { AuthGuard } from "./components/layout/AuthGuard";
+import { AppShell } from "./components/layout/AppShell";
+import { LoginPage } from "./pages/LoginPage";
+import { PnmPage } from "./pages/PnmPage";
+import { CnmPage } from "./pages/CnmPage";
+import { VtnPage } from "./pages/VtnPage";
+import { InfraPage } from "./pages/InfraPage";
 
 export function App() {
   return (
-    <div className="app">
-      <header>
-        <h1>First Person Trust Stack</h1>
-        <p>
-          PNM · CNM · VTN Manager — product layer for{" "}
-          <a href="https://www.fpndtg.com" target="_blank" rel="noreferrer">
-            fpndtg.com
-          </a>
-        </p>
-      </header>
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          {/* Public */}
+          <Route path="/login" element={<LoginPage />} />
 
-      <nav aria-label="Manager modules">
-        <a className="active" href="#pnm">
-          PNM
-        </a>
-        <a href="#cnm">CNM</a>
-        <a href="#vtn">VTN Manager</a>
-      </nav>
+          {/* Authenticated — wrapped in AppShell */}
+          <Route
+            element={
+              <AuthGuard>
+                <AppShell />
+              </AuthGuard>
+            }
+          >
+            <Route path="/pnm" element={<PnmPage />} />
+            <Route path="/cnm" element={<CnmPage />} />
+            <Route path="/vtn" element={<VtnPage />} />
+            <Route path="/infra" element={<InfraPage />} />
+          </Route>
 
-      <section className="card-grid">
-        {FPNDTG_SERVICES.map((service) => (
-          <ServiceCard key={service.id} service={service} />
-        ))}
-      </section>
-    </div>
+          {/* Default redirect */}
+          <Route path="/" element={<Navigate to="/pnm" replace />} />
+          <Route path="*" element={<Navigate to="/pnm" replace />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
   );
 }

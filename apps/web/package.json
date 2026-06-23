@@ -13,13 +13,20 @@
   "dependencies": {
     "@fpndtg/adapters-vti": "workspace:*",
     "@fpndtg/brand-config": "workspace:*",
+    "@hookform/resolvers": "^5.4.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.80.0",
+    "react-router-dom": "^7.18.0",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@tailwindcss/vite": "^4.3.1",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
+    "@types/react-router-dom": "^5.3.3",
     "@vitejs/plugin-react": "^4.3.4",
+    "tailwindcss": "^4.3.1",
     "typescript": "^5.7.3",
     "vite": "^6.2.2"
   }

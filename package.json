@@ -14,6 +14,9 @@
     "dev:web": "pnpm --filter @fpndtg/web dev",
     "dev:validator": "pnpm --filter @fpndtg/validator dev",
     "typecheck": "pnpm -r run typecheck",
-    "lint": "pnpm -r run lint"
+    "lint": "pnpm -r run lint",
+    "db:generate": "pnpm --filter @fpndtg/db-infra db:generate && pnpm --filter @fpndtg/db-user db:generate",
+    "db:migrate": "pnpm --filter @fpndtg/db-infra db:migrate && pnpm --filter @fpndtg/db-user db:migrate",
+    "db:migrate:deploy": "pnpm --filter @fpndtg/db-infra db:migrate:deploy && pnpm --filter @fpndtg/db-user db:migrate:deploy"
   }
 }

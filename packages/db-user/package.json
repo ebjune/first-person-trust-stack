@@ -1,0 +1,32 @@
+{
+  "name": "@fpndtg/db-user",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "lint": "echo \"no lint configured\"",
+    "db:generate": "dotenv -e ../../.env -- prisma generate",
+    "db:migrate": "dotenv -e ../../.env -- prisma migrate dev",
+    "db:migrate:deploy": "dotenv -e ../../.env -- prisma migrate deploy",
+    "db:reset": "dotenv -e ../../.env -- prisma migrate reset",
+    "db:studio": "dotenv -e ../../.env -- prisma studio",
+    "db:check": "node -e \"import('./dist/client.js').then(m => m.userDb.$connect().then(() => { console.log('fps_user: connected'); return m.userDb.$disconnect(); })).catch(e => { console.error('fps_user: connection failed', e.message); process.exit(1); })\""
+  },
+  "dependencies": {
+    "@prisma/client": "^6.9.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "dotenv-cli": "^11.0.0",
+    "prisma": "^6.9.0",
+    "typescript": "^5.7.3"
+  }
+}
