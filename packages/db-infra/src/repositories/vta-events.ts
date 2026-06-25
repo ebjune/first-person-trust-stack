@@ -51,6 +51,27 @@ export async function getVtaEventBySequence(sequence: number) {
   });
 }
 
+/** Get a VTA event by its hash (for ?versionId= queries). */
+export async function getVtaEventByHash(hash: string) {
+  return infraDb.vtaEvent.findFirst({
+    where: { hash },
+  });
+}
+
+/**
+ * Get the latest VTA event for a DID at or before a given timestamp
+ * (for ?versionTime= queries).
+ */
+export async function getVtaEventAtTime(did: string, at: Date) {
+  return infraDb.vtaEvent.findFirst({
+    where: {
+      did,
+      timestamp: { lte: at },
+    },
+    orderBy: { sequence: "desc" },
+  });
+}
+
 /** Verify the hash chain integrity for all VTA events. */
 export async function verifyVtaChain(): Promise<{
   valid: boolean;

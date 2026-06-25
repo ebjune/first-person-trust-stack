@@ -38,6 +38,7 @@ first-person-trust-stack/
 ├── services/
 │   ├── auth-service/        # DID challenge/verify + session management (Hono, port 8788)
 │   ├── orchestrator/        # VTA/VTC provisioning + Trust Task proxy (Hono, port 8789)
+│   ├── did-resolver/        # did:webvh DID document resolver (Hono, port 8792)
 │   ├── sync-service/        # Cross-DB event sync (infra ↔ user)
 │   ├── governance-api/      # Structured rules → PEP (stub)
 │   └── vtn-service/         # VTN federation (greenfield stub)
@@ -144,6 +145,7 @@ Then open **http://localhost:5173** in your browser.
 | `auth-service` | 8788 | DID challenge/verify, session tokens, user creation |
 | `orchestrator` | 8789 | VTA/VTC provisioning, Trust Task proxy, ledger writes |
 | `validator` | 8787 | VP/VMC verification (stub), ledger integrity checks, Trust Task log |
+| `did-resolver` | 8792 | did:webvh DID document resolver — serves `did.json` and `did.jsonl` |
 | `web` | 5173 | React UI — PNM, CNM, VTN Manager, Infra Monitor |
 
 ## First-time login

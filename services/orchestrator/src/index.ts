@@ -91,7 +91,7 @@ app.post("/vta/provision", async (c) => {
     return c.json({ error: "did is required" }, 400);
   }
 
-  // Log to ledger
+  // Log to ledger — include DID document fields so the DID resolver can serve them
   const event = await appendVtaLedgerEvent({
     did: body.did,
     eventType: "created",
@@ -100,6 +100,23 @@ app.post("/vta/provision", async (c) => {
       context: body.context ?? "default",
       provisionedAt: new Date().toISOString(),
       source: "orchestrator",
+      // Phase 1 placeholder key material — real keys come from VTI in Phase 2B
+      verificationMethod: [
+        {
+          id: "#key-1",
+          type: "Ed25519VerificationKey2020",
+          controller: body.did,
+          publicKeyMultibase: null,
+        },
+      ],
+      authentication: ["#key-1"],
+      service: [
+        {
+          id: "#mediator",
+          type: "DIDCommMessaging",
+          serviceEndpoint: "https://mediator.fpndtg.com",
+        },
+      ],
     },
   });
 

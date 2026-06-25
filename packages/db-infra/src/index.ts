@@ -7,6 +7,8 @@ export {
   appendVtaEvent,
   getVtaEvents,
   getVtaEventBySequence,
+  getVtaEventByHash,
+  getVtaEventAtTime,
   verifyVtaChain,
   type AppendVtaEventInput,
 } from "./repositories/vta-events.js";
