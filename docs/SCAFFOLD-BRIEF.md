@@ -55,7 +55,7 @@ Defaults live in `packages/brand-config`.
 ## Target monorepo layout
 
 ```
-first-person-trust-stack/
+fpts-exploratory/
 ├── apps/
 │   ├── web/                 # PNM + CNM + VTN Manager (React + Vite)
 │   └── validator/           # VMC/VP verification API (Hono)
@@ -158,7 +158,7 @@ Each of `governance-api`, `vtn-service`, `orchestrator`:
 
 ## After scaffold
 
-User will `git add`, commit, and push to `https://github.com/ebjune/first-person-trust-stack.git`.
+User will `git add`, commit, and push to `https://github.com/ebjune/fpts-exploratory.git`.
 
 Next phases (not this task):
 
@@ -171,7 +171,7 @@ Next phases (not this task):
 
 | Resource | URL |
 |----------|-----|
-| This repo | https://github.com/ebjune/first-person-trust-stack |
+| This repo | https://github.com/ebjune/fpts-exploratory |
 | VTI (reference) | https://github.com/openvtc/verifiable-trust-infrastructure |
 | Live VTA | https://vta.fpndtg.com |
 | Live mediator | https://mediator.fpndtg.com |

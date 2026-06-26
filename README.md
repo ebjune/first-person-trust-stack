@@ -31,7 +31,7 @@ You do **not** need to rebuild VTI to develop FPS. Point adapters at live endpoi
 ## Repository layout
 
 ```
-first-person-trust-stack/
+fpts-exploratory/
 ├── apps/
 │   ├── web/                 # PNM + CNM + VTN Manager (React + Vite + Tailwind)
 │   └── validator/           # VMC/VP verification API (Hono, port 8787)

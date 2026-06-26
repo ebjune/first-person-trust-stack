@@ -258,7 +258,7 @@ model ActivityLog {
 ## Revised Monorepo Structure
 
 ```
-first-person-trust-stack/
+fpts-exploratory/
 ├── packages/
 │   ├── db-infra/              # Infrastructure database (Prisma)
 │   │   ├── prisma/
